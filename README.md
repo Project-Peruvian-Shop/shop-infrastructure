@@ -54,25 +54,28 @@ El archivo `terraform-deployer_accessKeys.csv` contiene las claves de acceso de 
 
    ```bash
    springboot_ip = "54.242.0.0"
+   mysql_ip = "13.220.93.0"
    ```
 
-6. Para destruir la infraestructura cuando ya no la necesites (importante para evitar costos innecesarios):
+6. Ejecutar `start_backend.sh` para iniciar el backend en la instancia EC2:
+
+   En macOS/Linux:
+
+   ```bash
+   ./scripts/start_backend.sh $springboot_ip ~/.ssh/id_rsa
+   ```
+
+7. Para destruir la infraestructura cuando ya no la necesites (importante para evitar costos innecesarios):
 
 ```bash
 terraform destroy -auto-approve
 ```
 
-7. Para volver a desplegar la infraestructura, repetir desde el paso 5.
+8. Para volver a desplegar la infraestructura, repetir desde el paso 5.
 
 ## Conectarse a la Instancia
 
 Utiliza SSH para conectarte a la instancia EC2. La dirección IP pública se encuentra en la salida del comando `terraform apply`.
-
-En windows:
-
-```
-ssh -i C:\Users\<tu_usuario>\.ssh\id_rsa ubuntu@<ip_publica_de_tu_instancia>
-```
 
 En macOS/Linux:
 

@@ -76,7 +76,7 @@ resource "aws_instance" "ubuntu_mysql" {
 
     # Configurar MySQL
     mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root'; FLUSH PRIVILEGES;"
-    mysql -u root -proot -e "CREATE DATABASE IF NOT EXISTS tp_db;"
+    mysql -u root -proot -e "CREATE DATABASE IF NOT EXISTS tuberiasperuanito_v1;"
 
     # Permitir conexión remota (usuario root accesible desde cualquier IP)
     mysql -u root -proot -e "CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY 'root';"
@@ -137,12 +137,10 @@ resource "aws_instance" "ubuntu_spring" {
     apt-get update -y
     apt-get install -y openjdk-17-jre-headless git
 
-    java -version
-    mvn -v
-
-    echo "SPRING_DATASOURCE_URL=jdbc:mysql://${aws_instance.ubuntu_mysql.public_ip}:3306/tp_db" | sudo tee -a /etc/environment
+    echo "SPRING_DATASOURCE_URL=jdbc:mysql://${aws_instance.ubuntu_mysql.public_ip}:3306/tuberiasperuanito_v1?createDatabaseIfNotExist=true" | sudo tee -a /etc/environment
     echo "SPRING_DATASOURCE_USERNAME=root" | sudo tee -a /etc/environment
     echo "SPRING_DATASOURCE_PASSWORD=root" | sudo tee -a /etc/environment
+    echo "SPRING_PROFILES_ACTIVE=mysql" | sudo tee -a /etc/environment
 
     echo "✅ Entorno Spring Boot listo. Sube tu proyecto con SCP o Git."
   EOF
@@ -151,12 +149,11 @@ resource "aws_instance" "ubuntu_spring" {
 # Scripts de deploy
 resource "null_resource" "deploy_backend" {
   provisioner "local-exec" {
-    command = var.os_type == "windows" ? "bash scripts/backend.sh ${aws_instance.ubuntu_nginx.public_ip} ${aws_instance.ubuntu_spring.public_ip} %USERPROFILE%\\.ssh\\id_rsa" : "bash scripts/backend.sh ${aws_instance.ubuntu_nginx.public_ip} ${aws_instance.ubuntu_spring.public_ip} ~/.ssh/id_rsa"
+    command = var.os_type == "windows" ? "bash scripts/backend.sh ${aws_instance.ubuntu_spring.public_ip} %USERPROFILE%\\.ssh\\id_rsa" : "bash scripts/backend.sh ${aws_instance.ubuntu_spring.public_ip} ~/.ssh/id_rsa"
   }
 
   depends_on = [
-    aws_instance.ubuntu_spring,
-    aws_instance.ubuntu_nginx
+    aws_instance.ubuntu_spring
   ]
 }
 

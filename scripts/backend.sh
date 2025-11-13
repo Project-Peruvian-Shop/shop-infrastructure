@@ -47,7 +47,10 @@ echo "⚡ Levantando backend en la instancia..."
 ssh -o StrictHostKeyChecking=no -i "$KEY_SSH" "$USUARIO@$IP_BACKEND" "
   sudo chown -R $USUARIO:$USUARIO /home/ubuntu/backend
   cd /home/ubuntu/backend
-  exit
+  echo '🚀 Levantando backend...'
+  nohup java -jar *.jar > app.log 2>&1 &
+  echo '✅ Backend iniciado correctamente'
 "
+
 
 echo "✅ Deploy del backend completado!"

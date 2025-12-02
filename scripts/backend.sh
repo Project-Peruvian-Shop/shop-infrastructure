@@ -15,7 +15,7 @@ USUARIO=ubuntu
 
 # Rutas locales
 REPO_BACKEND_LOCAL="./backend"
-REPO_BACKEND_URL="git@github.com:Project-Peruvian-Shop/shop-backend.git"
+REPO_BACKEND_URL="git@github.com:Project-Peruvian-Shop/tp-backend.git"
 BRANCH="main"
 
 # --- BACKEND ---
